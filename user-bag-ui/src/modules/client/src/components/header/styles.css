@@ -1,0 +1,15 @@
+.header-text {
+  text-align: center;
+  color: yellow;
+  font-family: Impact, sans-serif;
+  padding-top: .1%;
+  padding-bottom: .1%;
+}
+
+#header-body {
+  background-color: #9500ff;
+}
+
+.header-text-divider {
+  border-top: 1px solid #bbb;
+}

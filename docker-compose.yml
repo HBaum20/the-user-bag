@@ -1,0 +1,56 @@
+version: "3.7"
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  broker:
+    image: wurstmeister/kafka:2.12-2.3.0
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "9093:9093"
+    environment:
+      KAFKA_CREATE_TOPICS: "users-topic:2:1,encrypted-users-topic:2:1"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+      KAFKA_PORT: "9092"
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+
+      KAFKA_LISTENERS: INTERNAL://:9092,EXTERNAL://:9093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://:9092,EXTERNAL://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+  kafka-rest-proxy:
+    image: confluentinc/cp-kafka-rest:5.4.0
+    depends_on:
+      - zookeeper
+      - broker
+    ports:
+      - 8082:8082
+    hostname: kafka-rest-proxy
+    container_name: kafka-rest-proxy
+    environment:
+      KAFKA_REST_HOST_NAME: kafka-rest-proxy
+      KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:9092'
+      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
+
+  kafka-topics-ui:
+    image: landoop/kafka-topics-ui
+    depends_on:
+      - kafka-rest-proxy
+    ports:
+      - 8000:8000
+    container_name: kafka-topics-ui
+    environment:
+      KAFKA_REST_PROXY_URL: 'http://kafka-rest-proxy:8082'
+      PROXY: 'true'

@@ -1,0 +1,20 @@
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9093}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.baum.userbagservice.users.kafka.serializer.UserSerializer
+    consumer:
+      bootstrap-servers: localhost:9093
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.baum.userbagservice.users.kafka.serializer.UserDeserializer
+    streams:
+      properties:
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        "application.server": ${KAFKA_STREAMS_APPLICATION_SERVER:localhost:8080}
+      application-id: user-bag
+    properties:
+      "application.server": ${KAFKA_STREAMS_APPLICATION_SERVER:localhost:8080}
+
+server:
+  port: ${API_PORT:8080}
