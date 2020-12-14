@@ -18,9 +18,6 @@ class Topology(
     init {
         val userRecordSerde = JsonSerde(UserRecord::class.java, jacksonObjectMapper())
         val userEventStream = UserStream(builder, userRecordSerde).userEventStream()
-        UserProcessor(passwordAuthenticator, userEventStream, userSerde()).userTable()
+        UserProcessor(passwordAuthenticator, userEventStream, userRecordSerde).userTable()
     }
-
-    @Bean
-    final fun userSerde(): Serde<UserRecord> = JsonSerde(UserRecord::class.java)
 }

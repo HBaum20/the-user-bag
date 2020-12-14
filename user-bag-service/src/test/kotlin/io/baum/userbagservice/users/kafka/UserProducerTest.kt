@@ -23,14 +23,12 @@ class UserProducerTest {
     private lateinit var consumer: Consumer<UserRecord>
     private lateinit var userProducer: UserProducer
 
-    @BeforeEach
-    fun setUp() {
-        consumer = kafka.listenFor(1, "users-topic")
-        userProducer = UserProducer(kt)
-    }
-
     @Test
     fun shouldSendUserRecordToKafka() {
+
+        consumer = kafka.listenFor(1, "users-topic")
+        userProducer = UserProducer(kt)
+
         val userRecord = UserRecord(
                 "1",
                 "Arthur Morgan",

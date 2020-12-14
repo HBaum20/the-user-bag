@@ -15,8 +15,6 @@ class UserProcessor(
         private val userEventStream: KStream<String, UserRecord>,
         private val userSerde: Serde<UserRecord>
 ) {
-
-    @Bean
     fun userTable(): KTable<String, UserRecord> {
         val store = Stores.inMemoryKeyValueStore("encrypted-users-store")
         val stringSerde = Serdes.String()

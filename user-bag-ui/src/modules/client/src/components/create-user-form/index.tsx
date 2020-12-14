@@ -19,6 +19,8 @@ const CreateUserForm : React.FC<CreateUserFormProps> = ({onBack, onSuccess}) => 
     const [password, setPassword] = useState<string | null>(null)
     const [confirmPassword, setConfirmPassword] = useState<string | null>(null)
 
+    const [alreadySubmitted, setAlreadySubmitted] = useState(false);
+
     const setField = (event: ChangeEvent<HTMLInputElement>, setter: Function): void => setter(event.target.value)
 
     const allFieldsPopulated = (): boolean =>
@@ -36,6 +38,7 @@ const CreateUserForm : React.FC<CreateUserFormProps> = ({onBack, onSuccess}) => 
     }
 
     const postToApi = () => {
+        setAlreadySubmitted(true);
         try {
             const model = createUserModelFromState();
             axios.post('/users', model)
@@ -45,6 +48,7 @@ const CreateUserForm : React.FC<CreateUserFormProps> = ({onBack, onSuccess}) => 
                 })
                 .catch((error) => AppToaster.show({message: `Error creating account: ${error}`, intent: 'danger'}))
         } catch(err) {
+            setAlreadySubmitted(false);
             AppToaster.show({message: err, intent: "danger"})
         }
     }
@@ -114,7 +118,7 @@ const CreateUserForm : React.FC<CreateUserFormProps> = ({onBack, onSuccess}) => 
                 <Button
                     data-testid="create-user-submit-button"
                     onClick={postToApi}
-                    disabled={!allFieldsPopulated()}
+                    disabled={!allFieldsPopulated() || alreadySubmitted}
                 >Submit</Button>
                 <Button onClick={onBack}>Back</Button>
             </div>

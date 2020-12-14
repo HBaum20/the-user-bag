@@ -74,16 +74,16 @@ class UserRepository(
                 .map { mapOf("host" to it.host(), "port" to it.port().toString()) }
                 .filterNot { it["host"] == thisHost && it["port"] == thisPort }
 
-        remoteHosts.forEach {
-            val remoteUserRecords = getRemoteUsers(it["host"], it["port"])
-            remoteUserRecords.map { (key, value) -> users[key] = value }
+        remoteHosts.forEach { remoteHost ->
+            val remoteUserRecords = remoteHost["host"]?.let { remoteHost["port"]?.let { it1 -> getRemoteUsers(it, it1) } }
+            remoteUserRecords?.map { (key, value) -> users[key] = value }
         }
         return users.values.toList()
     }
 
-    private fun getRemoteUsers(host: String?, port: String?): Map<String, UserRecord> =
+    private fun getRemoteUsers(host: String, port: String): Map<String, UserRecord> =
             apiClient
-                    .forInstance(RemoteAddress(host!!, port?.toInt()!!))
+                    .forInstance(RemoteAddress(host, port.toInt()))
                     .getAllUsers()
                     .map { Pair(it.id, it.toKafkaRecord()) }
                     .toMap()

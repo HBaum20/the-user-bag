@@ -29,7 +29,7 @@ class KafkaConfig {
     private lateinit var brokerAddresses: String
 
     @Bean
-    fun kpf(): ProducerFactory<String, UserRecord> {
+    fun kafkaProducerFactory(): ProducerFactory<String, UserRecord> {
         val configs = HashMap<String, Any>()
         configs[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = this.brokerAddresses
         configs[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
@@ -38,7 +38,7 @@ class KafkaConfig {
     }
 
     @Bean
-    fun kcf(): ConsumerFactory<String, UserRecord> {
+    fun kafkaConsumerFactory(): ConsumerFactory<String, UserRecord> {
         val configs = HashMap<String, Any>()
         configs[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = this.brokerAddresses
         configs[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
@@ -50,15 +50,15 @@ class KafkaConfig {
     }
 
     @Bean
-    fun kt(): KafkaTemplate<String, UserRecord> {
-        return KafkaTemplate(kpf())
+    fun kafkaTemplate(kafkaProducerFactory: ProducerFactory<String, UserRecord>): KafkaTemplate<String, UserRecord> {
+        return KafkaTemplate(kafkaProducerFactory)
     }
 
     @Bean
-    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, UserRecord> {
+    fun kafkaListenerContainerFactory(kafkaConsumerFactory: ConsumerFactory<String, UserRecord>): ConcurrentKafkaListenerContainerFactory<String, UserRecord> {
         val factory: ConcurrentKafkaListenerContainerFactory<String, UserRecord>
                 = ConcurrentKafkaListenerContainerFactory()
-        factory.consumerFactory = kcf()
+        factory.consumerFactory = kafkaConsumerFactory
         return factory
     }
 
