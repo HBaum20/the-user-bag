@@ -102,7 +102,7 @@ class ApiClientTest {
                     )
             )
             stubFor(
-                    get(urlEqualTo("/users/remote"))
+                    get(urlEqualTo("/users/local"))
                             .willReturn(
                                     aResponse()
                                             .withStatus(200)
@@ -118,7 +118,7 @@ class ApiClientTest {
         @Test
         fun `should throw exception on non 2xx`() {
             stubFor(
-                    get(urlEqualTo("/users/remote"))
+                    get(urlEqualTo("/users/local"))
                             .willReturn(
                                     aResponse()
                                             .withStatus(500)

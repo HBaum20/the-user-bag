@@ -4,7 +4,6 @@ import arrow.core.Either
 import io.baum.userbagservice.users.error.RecordNotFoundException
 import io.baum.userbagservice.users.error.UnauthorisedUserException
 import io.baum.userbagservice.users.kafka.UserProducer
-import io.baum.userbagservice.users.kafka.UserRecord
 import io.baum.userbagservice.users.kafka.UserRepository
 import io.baum.userbagservice.users.tools.PasswordAuthenticator
 import io.baum.userbagservice.users.web.model.RemoteAddress
@@ -27,9 +26,9 @@ class UserService(
                 .map { record -> record ?: throw RecordNotFoundException(id) }
                 .map { record -> if(passwordAuthenticator.verifyPassword(password, record.password)) record.toDomain() else throw UnauthorisedUserException(id) }
 
-    fun getAllUsers(remote: Boolean): List<UserModel?> = if(!remote) {
-        userRepository.getAllUsers().map { it?.toDomain() }
+    fun getAllUsers(local: Boolean): List<UserModel> = if(!local) {
+        userRepository.getAllUsers().map { it.toDomain() }
     } else {
-        userRepository.getAllUsersLocal().map { it?.toDomain() }
+        userRepository.getAllUsersLocal().map { it.toDomain() }
     }
 }

@@ -59,14 +59,14 @@ class UserRepository(
         }
     }
 
-    fun getAllUsersLocal(): List<UserRecord?> = encryptedUserStore.getAll().map { it.value }
+    fun getAllUsersLocal(): List<UserRecord> = encryptedUserStore.getAll().mapNotNull { it.value }
 
-    fun getAllUsers(): List<UserRecord?> {
+    fun getAllUsers(): List<UserRecord> {
 
-        val users = mutableMapOf<String, UserRecord?>()
+        val users = mutableMapOf<String, UserRecord>()
 
         encryptedUserStore.getAll().forEach {
-            users[it.key] = it.value
+            it.value?.let { value -> users[it.key] = value }
         }
 
         val metadata = streamsBuilder.kafkaStreams.allMetadataForStore("encrypted-users-store")
@@ -84,7 +84,7 @@ class UserRepository(
     private fun getRemoteUsers(host: String, port: String): Map<String, UserRecord> =
             apiClient
                     .forInstance(RemoteAddress(host, port.toInt()))
-                    .getAllUsers()
+                    .getAllUsersLocal()
                     .map { Pair(it.id, it.toKafkaRecord()) }
                     .toMap()
 }

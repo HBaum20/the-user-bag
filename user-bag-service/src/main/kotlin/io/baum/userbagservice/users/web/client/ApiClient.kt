@@ -1,6 +1,7 @@
 package io.baum.userbagservice.users.web.client
 
 import io.baum.userbagservice.users.error.UpstreamException
+import io.baum.userbagservice.users.web.RetrieveUserApi
 import io.baum.userbagservice.users.web.model.UserModel
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
@@ -12,11 +13,12 @@ class ApiClient(
     host: String,
     port: Int,
     private val restTemplate: RestTemplate
-) {
+) : RetrieveUserApi {
     private val api = "http://$host:$port"
 
-    fun getUserById(id: String, password: String): UserModel = restTemplate.safelyGET("$api/users/$id?password=$password")
-    fun getAllUsers(): List<UserModel> = restTemplate.safelyGET("$api/users/remote")
+    override fun getUserById(id: String, password: String): UserModel = restTemplate.safelyGET("$api/users/$id?password=$password")
+    override fun getAllUsers(): List<UserModel> = restTemplate.safelyGET("$api/users")
+    override fun getAllUsersLocal(): List<UserModel> = restTemplate.safelyGET("$api/users/local")
 
     private inline fun <reified T> RestTemplate.safelyGET(url: String): T = try {
         this.exchange(url, HttpMethod.GET, HttpEntity.EMPTY, object : ParameterizedTypeReference<T>() {}).body!!

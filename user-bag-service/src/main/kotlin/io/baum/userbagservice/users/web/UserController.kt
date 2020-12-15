@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.*
 class UserController(
     private val userService: UserService,
     private val apiClient: ApiClientFactory
-) {
+) : CreateUserApi, RetrieveUserApi {
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun createUser(@RequestBody user: UserModel) = userService.createUser(user)
+    override fun createUser(@RequestBody user: UserModel) = userService.createUser(user)
 
     @GetMapping("/{id}")
-    fun getUserById(@PathVariable id: String, @RequestParam password: String) = userService.getUserById(id, password)
+    override fun getUserById(@PathVariable id: String, @RequestParam password: String) = userService.getUserById(id, password)
             .getOrHandle { apiClient.forInstance(it).getUserById(id, password) }
 
     @GetMapping
-    fun getAllUsers() = userService.getAllUsers(false).map { it?.hideSensitiveFields() }
+    override fun getAllUsers() = userService.getAllUsers(false).map { it?.hideSensitiveFields() }
 
-    @GetMapping("/remote")
-    fun getAllUsersRemote() = userService.getAllUsers(true).map { it?.hideSensitiveFields() }
+    @GetMapping("/local")
+    override fun getAllUsersLocal() = userService.getAllUsers(true).map { it?.hideSensitiveFields() }
 }

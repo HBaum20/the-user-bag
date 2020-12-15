@@ -111,7 +111,7 @@ class UserControllerTest {
         fun `get all users remote should return all users with remote = true and hide sensitive data`() {
             every { userService.getAllUsers(true) } returns users
 
-            val result = underTest.getAllUsersRemote()
+            val result = underTest.getAllUsersLocal()
 
             assertThat(result).isEqualTo(users.map { it.hideSensitiveFields() })
             verify { userService.getAllUsers(true) }
