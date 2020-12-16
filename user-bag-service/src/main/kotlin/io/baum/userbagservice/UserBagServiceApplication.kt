@@ -7,7 +7,8 @@ import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.annotation.EnableKafkaStreams
 
 @SpringBootApplication
-
+@EnableKafka
+@EnableKafkaStreams
 class UserBagServiceApplication
 
 fun main() {

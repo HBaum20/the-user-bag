@@ -23,9 +23,6 @@ import java.util.concurrent.CountDownLatch
 class KafkaConfig {
 
     lateinit var received: String
-    lateinit var batchReceived: String
-
-    val latch = CountDownLatch(2)
 
     @Value("\${" + EmbeddedKafkaBroker.SPRING_EMBEDDED_KAFKA_BROKERS + "}")
     private lateinit var brokerAddresses: String
@@ -67,7 +64,6 @@ class KafkaConfig {
     @KafkaListener(id = "kotlin", topics = ["users-topic"], containerFactory = "kafkaListenerContainerFactory")
     fun listen(value: String) {
         this.received = value
-        this.latch.countDown()
     }
 
 }
