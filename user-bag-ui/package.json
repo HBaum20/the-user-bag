@@ -1,0 +1,78 @@
+{
+  "name": "user-bag-ui",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@blueprintjs/core": "^3.35.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.53",
+    "@types/react-dom": "^16.9.8",
+    "axios": "^0.19.2",
+    "chalk": "^4.1.0",
+    "eslint": "^7.11.0",
+    "http-proxy-middleware": "^1.0.6",
+    "json-log": "^3.0.1",
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-mount": "^4.0.0",
+    "koa-router": "^8.0.8",
+    "koa-server-http-proxy": "^0.1.0",
+    "koa-static": "^5.0.0",
+    "node-sass": "^4.11.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "supertest": "^6.0.1",
+    "typescript": "^4.0.3",
+    "web-vitals": "^0.2.4"
+  },
+  "proxy": "http://localhost:8080",
+  "scripts": {
+    "build:server": "tsc --project tsconfig.json",
+    "start:dev": "rm -rf dist && NODE_ENV=development node src/modules/client/init-dev-server.js",
+    "start:hotreload": "rm -rf src/modules/client/build && webpack-dev-server --hot --host 0.0.0.0 --config src/modules/client/webpack.config.dev.js --mode development --watch",
+    "start:server": "npm run build:server && node dist/src/index.js",
+    "start:serverreload": "nodemon -L -e ts,json,js --exec yarn start:server",
+    "start": "PORT=8080 NODE_ENV=production node dist/src/index.js",
+    "test": "jest"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.7.4",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "axios-mock-adapter": "^1.19.0",
+    "babel-jest": "^24.1.0",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-css-modules-transform": "^1.6.2",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "css-loader": "^1.0.1",
+    "fork-ts-checker-webpack-plugin": "^6.0.3",
+    "html-webpack-plugin": "^4.5.0",
+    "react-hot-loader": "^4.6.5",
+    "react-test-renderer": "^16.13.1",
+    "sass-loader": "^10.1.0",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^8.0.11",
+    "typings-for-css-modules-loader": "^1.7.0",
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.1.14"
+  }
+}
